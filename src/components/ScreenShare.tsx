@@ -1,9 +1,10 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ScreenShare as ScreenShareIcon, Video, Search } from "lucide-react";
+import { ScreenShare as ScreenShareIcon, Video } from "lucide-react";
 import { toast } from '@/components/ui/use-toast';
-import { analyzeScreenshot } from '@/utils/screenAnalysis';
+import { initScreenAnalysis, stopScreenAnalysis } from '@/utils/screenAnalysis';
 
 interface ScreenShareProps {
   onScreenCaptured: (stream: MediaStream) => void;
@@ -18,7 +19,6 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
   
   const startScreenShare = async () => {
     try {
@@ -32,6 +32,9 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
         videoRef.current.play().catch(err => console.error("Error playing video:", err));
+        
+        // Initialize continuous frame capture
+        initScreenAnalysis(videoRef.current);
       }
       
       setStream(mediaStream);
@@ -41,6 +44,11 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
       mediaStream.getVideoTracks()[0].onended = () => {
         stopScreenShare();
       };
+      
+      toast({
+        title: "Screen sharing active",
+        description: "You can now ask questions about your data in the chat",
+      });
     } catch (error) {
       console.error("Error starting screen share:", error);
       toast({
@@ -60,51 +68,32 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
       videoRef.current.srcObject = null;
     }
     
+    // Stop continuous frame capture
+    stopScreenAnalysis();
+    
     setStream(null);
     setIsSharing(false);
-  };
-  
-  const handleAnalyze = async () => {
-    if (!videoRef.current || !isSharing) {
-      toast({
-        title: "Cannot analyze",
-        description: "Please start screen sharing first",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    try {
-      setIsAnalyzing(true);
-      const result = await analyzeScreenshot(videoRef.current);
-      toast({
-        title: "Analysis complete",
-        description: "Data has been extracted and analyzed",
-      });
-      console.log('Analysis result:', result);
-    } catch (error) {
-      toast({
-        title: "Analysis failed",
-        description: error.message,
-        variant: "destructive"
-      });
-    } finally {
-      setIsAnalyzing(false);
-    }
   };
   
   useEffect(() => {
     if (videoRef.current && stream) {
       videoRef.current.srcObject = stream;
       videoRef.current.play().catch(err => console.error("Error playing video:", err));
+      
+      // Initialize continuous frame capture when component mounts or stream changes
+      if (isSharing && videoRef.current) {
+        initScreenAnalysis(videoRef.current);
+      }
     }
     
     return () => {
+      // Clean up when component unmounts
+      stopScreenAnalysis();
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, [stream]);
+  }, [stream, isSharing]);
   
   return (
     <Card className="p-4 bg-secondary">
@@ -136,17 +125,6 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
             <ScreenShareIcon className="mr-2 h-4 w-4" />
             {isSharing ? "Stop Sharing" : "Start Screen Share"}
           </Button>
-          
-          {isSharing && (
-            <Button 
-              onClick={handleAnalyze}
-              disabled={isAnalyzing}
-              variant="secondary"
-            >
-              <Search className="mr-2 h-4 w-4" />
-              {isAnalyzing ? "Analyzing..." : "Analyze Data"}
-            </Button>
-          )}
         </div>
       </div>
     </Card>

@@ -8,6 +8,7 @@ import { ArrowUp } from "lucide-react";
 import ChatMessage, { Message } from './ChatMessage';
 import VoiceInput from './VoiceInput';
 import { toast } from '@/components/ui/use-toast';
+import { processQuery } from '@/utils/screenAnalysis';
 
 interface ChatInterfaceProps {
   isScreenSharing: boolean;
@@ -83,46 +84,47 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ isScreenSharing }) => {
     // Set loading state
     setIsLoading(true);
     
-    // Simulate AI response (in a real app, you would call an API)
-    setTimeout(() => {
-      // Create mock AI response based on the query
-      const mockResponses: Record<string, string> = {
-        'average': 'Looking at the TSLA data on your screen, the average price over the last 5 days appears to be $267.34.',
-        'highest': 'Based on the data visible in your spreadsheet, AAPL has shown the highest growth of 4.2% in the last week.',
-        'total': 'The total value across all stocks in your spreadsheet is $14,287,651.',
-        'trend': 'I can see a downward trend for most tech stocks in your spreadsheet over the last month, with an average decline of 2.3%.',
-        'compare': 'Comparing the stocks in your spreadsheet, MSFT has outperformed GOOG by approximately 3.6% this quarter.'
-      };
+    try {
+      // Process the query with the latest frame data
+      const result = await processQuery(userMessage.content);
       
-      // Find a relevant response or use default
-      let responseContent = 'Based on the spreadsheet data I can see, ';
-      const lowercaseInput = userMessage.content.toLowerCase();
-      
-      for (const [keyword, response] of Object.entries(mockResponses)) {
-        if (lowercaseInput.includes(keyword)) {
-          responseContent = response;
-          break;
-        }
+      if (result.success) {
+        // Add AI response to chat
+        setMessages(prev => [
+          ...prev, 
+          {
+            id: Date.now().toString(),
+            role: 'assistant',
+            content: result.data.response || 'I processed the data from your screen. What specific information would you like to know?',
+            timestamp: new Date()
+          }
+        ]);
+      } else {
+        throw new Error(result.error || 'Failed to process your query');
       }
+    } catch (error) {
+      console.error('Error processing query:', error);
       
-      if (responseContent === 'Based on the spreadsheet data I can see, ') {
-        responseContent += 'I can analyze that the top performing stock is AAPL with a 4.2% increase, while TSLA has been the most volatile with a standard deviation of 3.7% in daily returns.';
-      }
-      
-      // Add AI response to chat
+      // Add error message to chat
       setMessages(prev => [
         ...prev, 
         {
           id: Date.now().toString(),
           role: 'assistant',
-          content: responseContent,
+          content: `I encountered an error while analyzing your data: ${error.message}. Please make sure your spreadsheet is clearly visible and try again.`,
           timestamp: new Date()
         }
       ]);
       
+      toast({
+        title: 'Analysis failed',
+        description: error.message,
+        variant: 'destructive'
+      });
+    } finally {
       // End loading state
       setIsLoading(false);
-    }, 2000);
+    }
   };
   
   const handleVoiceInput = (transcript: string) => {
