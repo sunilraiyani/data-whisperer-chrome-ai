@@ -10,6 +10,7 @@ const Index = () => {
   const [capturedStream, setCapturedStream] = useState<MediaStream | null>(null);
   
   const handleScreenCaptured = (stream: MediaStream) => {
+    console.log("Screen captured, setting stream");
     setCapturedStream(stream);
   };
   

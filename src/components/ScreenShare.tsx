@@ -24,7 +24,6 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
       // Request screen sharing with correct constraints
       const mediaStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
-          // Remove cursor property as it's not in MediaTrackConstraints
           displaySurface: "monitor"
         },
         audio: false
@@ -32,6 +31,7 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
       
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream;
+        videoRef.current.play().catch(err => console.error("Error playing video:", err));
       }
       
       setStream(mediaStream);
@@ -66,6 +66,12 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
   };
   
   useEffect(() => {
+    // Make sure video plays when stream changes
+    if (videoRef.current && stream) {
+      videoRef.current.srcObject = stream;
+      videoRef.current.play().catch(err => console.error("Error playing video:", err));
+    }
+    
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
@@ -76,11 +82,13 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
   return (
     <Card className="p-4 bg-secondary">
       <div className="flex flex-col space-y-4">
-        <div className="rounded-lg overflow-hidden bg-black/50 h-[200px] w-full flex items-center justify-center">
+        <div className="rounded-lg overflow-hidden bg-black/10 h-[200px] w-full flex items-center justify-center">
           {isSharing ? (
             <video 
               ref={videoRef} 
               autoPlay 
+              playsInline
+              muted
               className="w-full h-full object-contain"
             />
           ) : (
