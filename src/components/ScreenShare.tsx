@@ -21,10 +21,11 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
   
   const startScreenShare = async () => {
     try {
-      // Request screen sharing
+      // Request screen sharing with correct constraints
       const mediaStream = await navigator.mediaDevices.getDisplayMedia({
         video: {
-          cursor: "always"
+          // Remove cursor property as it's not in MediaTrackConstraints
+          displaySurface: "monitor"
         },
         audio: false
       });
