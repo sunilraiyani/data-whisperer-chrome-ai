@@ -76,7 +76,7 @@ const ScreenShare: React.FC<ScreenShareProps> = ({
   return (
     <Card className="p-4 bg-secondary">
       <div className="flex flex-col space-y-4">
-        <div className="rounded-lg overflow-hidden bg-black/50 h-[300px] w-full flex items-center justify-center">
+        <div className="rounded-lg overflow-hidden bg-black/50 h-[200px] w-full flex items-center justify-center">
           {isSharing ? (
             <video 
               ref={videoRef} 

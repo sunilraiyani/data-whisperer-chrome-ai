@@ -27,7 +27,7 @@ const Index = () => {
           <div className="lg:col-span-2">
             <Card className="h-full">
               <CardContent className="p-6">
-                <h2 className="text-2xl font-semibold mb-4">Share Your Screen</h2>
+                <h2 className="text-2xl font-semibold mb-4 text-primary">Share Your Screen</h2>
                 <p className="text-muted-foreground mb-6">
                   Start by sharing your screen, window, or tab that contains your spreadsheet data.
                 </p>
@@ -39,7 +39,7 @@ const Index = () => {
                 />
                 
                 <div className="mt-6">
-                  <h3 className="text-lg font-medium mb-2">Instructions</h3>
+                  <h3 className="text-lg font-medium mb-2 text-primary">Instructions</h3>
                   <ul className="list-disc list-inside text-muted-foreground space-y-2">
                     <li>Share a screen with a visible spreadsheet</li>
                     <li>Make sure the data you want to analyze is visible</li>
