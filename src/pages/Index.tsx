@@ -2,8 +2,11 @@
 import React, { useState } from 'react';
 import ScreenShare from '@/components/ScreenShare';
 import ChatInterface from '@/components/ChatInterface';
+import BackendStatusIndicator from '@/components/BackendStatusIndicator';
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const Index = () => {
   const [isScreenSharing, setIsScreenSharing] = useState(false);
@@ -18,11 +21,27 @@ const Index = () => {
     <div className="min-h-screen bg-background p-6">
       <div className="container mx-auto">
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-primary mb-2">Data Whisperer</h1>
+          <div className="flex justify-center items-center gap-4 mb-2">
+            <h1 className="text-4xl font-bold text-primary">Data Whisperer</h1>
+            <BackendStatusIndicator />
+          </div>
           <p className="text-muted-foreground">
             Share your spreadsheet and ask questions about your data
           </p>
         </header>
+        
+        <Alert className="mb-6">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Important Setup Instructions</AlertTitle>
+          <AlertDescription>
+            This application now uses a Python backend server. Navigate to the <code>backend</code> directory and run:
+            <pre className="bg-muted p-2 rounded mt-2 overflow-x-auto">
+              pip install -r requirements.txt<br/>
+              python -m app
+            </pre>
+            Make sure you have <code>tesseract-ocr</code> installed on your system and set your OpenAI API key.
+          </AlertDescription>
+        </Alert>
         
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           <div className="lg:col-span-2">

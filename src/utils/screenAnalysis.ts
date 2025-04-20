@@ -60,14 +60,14 @@ export const processQuery = async (query: string) => {
       throw new Error('No screen data available. Please make sure screen sharing is active.')
     }
     
-    // Send to our Edge Function
-    const response = await fetch('/functions/v1/analyze-screen', {
+    // Send to our Python backend
+    const formData = new FormData()
+    formData.append('base64_image', latestImageData)
+    formData.append('query', query)
+    
+    const response = await fetch('http://localhost:8000/analyze', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        image: latestImageData,
-        query: query 
-      })
+      body: formData
     })
     
     if (!response.ok) throw new Error('Analysis failed')
@@ -96,11 +96,14 @@ export const analyzeScreenshot = async (videoElement: HTMLVideoElement) => {
     // Convert to base64
     const imageData = canvas.toDataURL('image/png')
     
-    // Send to our Edge Function
-    const response = await fetch('/functions/v1/analyze-screen', {
+    // Send to our Python backend
+    const formData = new FormData()
+    formData.append('base64_image', imageData)
+    formData.append('query', 'Please analyze this data and provide a summary.')
+    
+    const response = await fetch('http://localhost:8000/analyze', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ image: imageData })
+      body: formData
     })
     
     if (!response.ok) throw new Error('Analysis failed')

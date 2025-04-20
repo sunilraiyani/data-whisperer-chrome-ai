@@ -1,73 +1,55 @@
-# Welcome to your Lovable project
 
-## Project info
+# Data Whisperer
 
-**URL**: https://lovable.dev/projects/be1ba334-b5a4-45a6-bfb3-4699bf04298a
+An AI-powered application that lets users analyze spreadsheet data by sharing their screen and asking questions in natural language.
 
-## How can I edit this code?
+## Overview
 
-There are several ways of editing your application.
+Data Whisperer combines screen sharing technology with OCR (Optical Character Recognition) and AI to allow users to ask questions about spreadsheet data visible on their screen.
 
-**Use Lovable**
+## Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/be1ba334-b5a4-45a6-bfb3-4699bf04298a) and start prompting.
+- **Screen Sharing**: Capture what's on your screen in real-time
+- **OCR Technology**: Convert visual data from spreadsheets into text
+- **Natural Language Queries**: Ask questions about your data in plain English
+- **AI-Powered Analysis**: Get instant insights and answers about your data
 
-Changes made via Lovable will be committed automatically to this repo.
+## Architecture
 
-**Use your preferred IDE**
+The application is split into two parts:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+1. **Frontend**: React application with screen sharing capabilities
+2. **Backend**: Python server with OCR and AI analysis capabilities
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Setup Instructions
 
-Follow these steps:
+### Frontend
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+1. Install dependencies:
+   ```
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. Start the development server:
+   ```
+   npm run dev
+   ```
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Backend
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+Follow the setup instructions in the `backend/README.md` file.
 
-**Edit a file directly in GitHub**
+## Usage
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+1. Start both the frontend and backend servers
+2. Open the frontend in your browser
+3. Share your screen showing a spreadsheet
+4. Ask questions about your data in the chat interface
+5. Receive conversational answers based on AI analysis
 
-**Use GitHub Codespaces**
+## Requirements
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/be1ba334-b5a4-45a6-bfb3-4699bf04298a) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+- Modern web browser with screen sharing capabilities
+- Python 3.8+ for the backend
+- Tesseract OCR installed on your system
+- OpenAI API key
