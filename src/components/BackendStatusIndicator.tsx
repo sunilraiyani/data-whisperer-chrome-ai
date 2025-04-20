@@ -22,7 +22,6 @@ const BackendStatusIndicator: React.FC = () => {
 
     checkBackendStatus();
     
-    // Check every 30 seconds
     const interval = setInterval(checkBackendStatus, 30000);
     
     return () => clearInterval(interval);
@@ -38,18 +37,18 @@ const BackendStatusIndicator: React.FC = () => {
               className="h-6 cursor-help"
             >
               {isChecking ? (
-                "Checking backend..."
+                "Checking server..."
               ) : (
                 <>
                   {isBackendRunning ? (
                     <>
                       <Server className="h-3.5 w-3.5 mr-1" />
-                      Backend Connected
+                      Server Connected
                     </>
                   ) : (
                     <>
                       <ServerCrash className="h-3.5 w-3.5 mr-1" />
-                      Backend Offline
+                      Server Offline
                     </>
                   )}
                 </>
